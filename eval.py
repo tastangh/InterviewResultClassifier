@@ -86,20 +86,21 @@ def evaluate_model_on_test_set(model, X_test, y_test):
     return evaluate_metrics(y_test, y_test_pred)
 
 
-def save_evaluation_results(accuracy, precision, recall, f1_score, log_dir="results"):
+def save_evaluation_results(accuracy, precision, recall, f1_score, learning_rate, epochs, log_dir="results"):
     """
-    Test seti üzerinde elde edilen performans metriklerini zaman damgalı bir .txt dosyasına kaydeder.
+    Test seti üzerinde elde edilen performans metriklerini learning rate ve epoch bilgisi ile .txt dosyasına kaydeder.
     
     Args:
         accuracy -- doğruluk oranı (float)
         precision -- precision değeri (float)
         recall -- recall değeri (float)
         f1_score -- F1-score değeri (float)
+        learning_rate -- modelin öğrenme oranı (float)
+        epochs -- toplam epoch sayısı (int)
         log_dir -- sonuçların kaydedileceği dizin yolu (str)
     """
-    # Zaman damgası eklemek
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_path = os.path.join(log_dir, f"eval_results_{timestamp}.txt")
+    # Dosya adında learning rate ve epoch bilgisi ekle
+    log_path = os.path.join(log_dir, f"eval_results_lr{learning_rate}_epochs{epochs}.txt")
 
     # Dizin yoksa oluştur
     os.makedirs(log_dir, exist_ok=True)
@@ -107,6 +108,8 @@ def save_evaluation_results(accuracy, precision, recall, f1_score, log_dir="resu
     # Sonuçları dosyaya yaz
     with open(log_path, "w") as f:
         f.write("Test Sonuçları:\n")
+        f.write(f"Learning Rate: {learning_rate}\n")
+        f.write(f"Epochs: {epochs}\n")
         f.write(f"Accuracy: {accuracy:.4f}\n")
         f.write(f"Precision: {precision:.4f}\n")
         f.write(f"Recall: {recall:.4f}\n")
@@ -120,13 +123,17 @@ def eval_model():
     X, y = load_data("dataset/hw1Data.txt")
     X_train, y_train, X_val, y_val, X_test, y_test = split_data(X, y)
 
+    # Model parametreleri
+    learning_rate = 0.0005
+    epochs = 1000
+
     # Modeli eğit
-    model = LogisticRegressionSGD(learning_rate=0.001, epochs=5000)
+    model = LogisticRegressionSGD(learning_rate=learning_rate, epochs=epochs)
     model.fit(X_train, y_train, X_val, y_val)
 
     # Test seti üzerinde değerlendirme yap ve sonuçları kaydet
     accuracy, precision, recall, f1_score = evaluate_model_on_test_set(model, X_test, y_test)
-    save_evaluation_results(accuracy, precision, recall, f1_score)
+    save_evaluation_results(accuracy, precision, recall, f1_score, learning_rate, epochs)
 
     # Sonuçları konsola yazdır
     print("\n=== Test Seti Sonuçları ===")

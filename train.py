@@ -68,8 +68,8 @@ def train_model():
     initialize_results_directory()
 
     # Model parametreleri
-    learning_rate = 0.001  # Learning rate'i düşürdük
-    epochs = 500  # Epoch sayısını artırdık
+    learning_rate = 0.0005  # Learning rate'i düşürdük
+    epochs = 1000  # Epoch sayısını artırdık
 
     # Modeli eğit
     model = LogisticRegressionSGD(learning_rate=learning_rate, epochs=epochs)

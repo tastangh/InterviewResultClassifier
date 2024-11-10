@@ -1,0 +1,26 @@
+Gözlemler
+Düzenli Azalma:
+Hem eğitim kaybı (Training Loss) hem de doğrulama kaybı (Validation Loss) düzenli olarak azalmaktadır. Bu durum, modelin her iki veri setinde de öğrenmeye devam ettiğini ve learning rate (0.001) ile epoch sayısının (500) daha uygun bir seçim olduğunu gösterir.
+Aşırı Öğrenme Gözlemlenmemesi:
+Eğitim kaybı ve doğrulama kaybı arasında büyük bir fark yoktur; her ikisi de benzer bir hızda azalmaktadır. Bu durumda modelin aşırı öğrenme yapmadığını söyleyebiliriz. Ayrıca, doğrulama kaybında herhangi bir artış gözlemlenmemektedir; bu da overfitting olmadığını gösterir.
+Aşırı Öğrenme (Overfitting) Durumu
+Aşırı öğrenme gözlemlenmiyor: Model, doğrulama verisi üzerinde de düzenli bir şekilde iyileşiyor ve doğrulama kaybı artış göstermiyor. Bu durumda aşırı öğrenme olmadığını söyleyebiliriz.
+Dengeli Öğrenme: Eğitim ve doğrulama kayıpları uyumlu bir şekilde azalıyor, bu da modelin her iki veri setinde de benzer bir öğrenme performansı gösterdiğini ifade eder.
+İyileştirme Önerisi
+Bu durumda, learning rate ve epoch sayısı için yapılan değişiklikler başarılı olmuş gibi görünüyor. Ancak daha fazla iyileştirme sağlamak isterseniz şu adımları göz önünde bulundurabilirsiniz:
+
+Epoch Sayısını Artırmak:
+Eğitim ve doğrulama kayıpları hala azalmaya devam ettiği için epoch sayısını biraz daha artırmak (örneğin 700 veya 1000 epoch) modeli daha iyi hale getirebilir.
+Erken Durdurma (Early Stopping):
+Eğer doğrulama kaybı belirli bir noktadan sonra artmaya başlarsa, erken durdurma (early stopping) uygulayarak eğitimi o noktada sonlandırabilirsiniz. Bu, aşırı öğrenmenin başlamasını önlemeye yardımcı olur.
+
+Önceki Durumun Değerlendirilmesi:
+
+İlk grafikte eğitim ve doğrulama kayıpları çok yüksek ve dalgalıydı, bu nedenle learning rate’i düşürme ve epoch sayısını artırma ihtiyacı ortaya çıktı.
+Yapılan İyileştirmeler:
+
+Learning rate 0.01'den 0.001'e düşürüldü ve epoch sayısı 100'den 500'e çıkarıldı. Bu sayede model daha yavaş ancak daha dengeli bir şekilde öğrenmeye başladı.
+Sonuçların Karşılaştırılması:
+
+Yeni grafik, modelin eğitim ve doğrulama kayıplarının düzenli olarak azaldığını ve aşırı öğrenme belirtisi göstermediğini ortaya koydu.
+Bu düzenlemelerle modelin doğrulama verisinde de iyi bir performans sergilediği gözlemlendi.
