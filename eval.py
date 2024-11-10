@@ -124,8 +124,8 @@ def eval_model():
     X_train, y_train, X_val, y_val, X_test, y_test = split_data(X, y)
 
     # Model parametreleri
-    learning_rate = 0.0005
-    epochs = 1000
+    learning_rate = 0.001
+    epochs = 5000
 
     # Modeli eğit
     model = LogisticRegressionSGD(learning_rate=learning_rate, epochs=epochs)

@@ -2,6 +2,8 @@ from train import train_model
 from eval import eval_model
 from visualize import plot_data
 
+# TODO : . Eğitim, doğrulama ve test örnekleri için accuracy, precision, recall ve f-scrore hesabını yapınız.(Şuan sadece test için yapıyoz)
+
 def main():
     """
     Eğitim, test veya görselleştirme işlemlerini başlatır.

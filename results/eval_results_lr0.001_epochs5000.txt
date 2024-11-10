@@ -1,0 +1,7 @@
+Test Sonuçları:
+Learning Rate: 0.001
+Epochs: 5000
+Accuracy: 0.9000
+Precision: 0.8947
+Recall: 1.0000
+F1-Score: 0.9444
