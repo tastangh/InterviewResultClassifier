@@ -15,11 +15,12 @@ def save_training_log(epoch, training_losses, validation_losses):
     """
     Eğitim sürecindeki ara sonuçları zaman damgalı bir .txt dosyasına kaydeder.
     
-    Args:
+    Argümanlar:
     epoch -- epoch sayısı (int)
     training_losses -- eğitim kayıpları listesi (list of float)
     validation_losses -- doğrulama kayıpları listesi (list of float)
     """
+    # Zaman damgası eklemek
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_path = f"results/train_log_{timestamp}.txt"
 
@@ -33,13 +34,15 @@ def plot_loss_graph(training_losses, validation_losses):
     """
     Eğitim ve doğrulama kayıplarını gösteren bir grafik oluşturur ve zaman damgalı olarak kaydeder.
     
-    Args:
+    Argümanlar:
     training_losses -- eğitim kayıpları listesi (list of float)
     validation_losses -- doğrulama kayıpları listesi (list of float)
     """
+    # Zaman damgası eklemek
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     save_path = f"results/graphs/loss_graph_{timestamp}.png"
 
+    # Grafik oluşturma ve kaydetme
     plt.figure(figsize=(10, 6))
     plt.plot(training_losses, label="Training Loss")
     plt.plot(validation_losses, label="Validation Loss")
@@ -52,8 +55,8 @@ def plot_loss_graph(training_losses, validation_losses):
 
 def train_model():
     """
-    Veriyi yükler, lojistik regresyon modelini eğitir, ara sonuçları kaydeder, eğitim/doğrulama 
-    kayıplarını grafikte gösterir ve eğitilen modelin ağırlıklarını kaydeder.
+    Veriyi yükler, lojistik regresyon modelini eğitir, ara sonuçları kaydeder ve eğitim/doğrulama 
+    kayıplarını grafikte gösterir.
     """
     # Veriyi yükle ve böl
     X, y = load_data("dataset/hw1Data.txt")
@@ -63,11 +66,8 @@ def train_model():
     initialize_results_directory()
 
     # Modeli eğit
-    model = LogisticRegressionSGD(learning_rate=0.0001, epochs=100)
+    model = LogisticRegressionSGD(learning_rate=0.01, epochs=100)
     training_losses, validation_losses = model.fit(X_train, y_train, X_val, y_val)
-
-    # Eğitim tamamlandıktan sonra ağırlıkları kaydet
-    model.save_weights("results/model_weights.json")
 
     # Ara sonuçları ve grafik kaydet
     save_training_log(len(training_losses), training_losses, validation_losses)
