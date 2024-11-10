@@ -1,33 +1,35 @@
 import numpy as np
 
-# Sigmoid aktivasyon fonksiyonu
 def sigmoid(z):
     """
     Sigmoid aktivasyon fonksiyonu, giriş değerini [0, 1] aralığında bir olasılığa dönüştürür.
     
     Argümanlar:
-    z -- girdi değeri veya değerler dizisi (float veya ndarray)
+    z -- girdi değeri veya değerler dizisi 
     
     Returns:
-    result -- sigmoid fonksiyonunun uygulandığı değer veya değerler dizisi (float veya ndarray)
+    result -- sigmoid fonksiyonunun uygulandığı değer veya değerler dizisi
     """
     return 1 / (1 + np.exp(-z))
 
-# Cross-Entropy Loss fonksiyonu
-def cross_entropy_loss(y_true, y_pred):
+import numpy as np
+
+def cross_entropy_loss(y_target, y_pred, epsilon=1e-10):
     """
-    İkili sınıflandırma için cross-entropy loss hesaplar.
+    İkili sınıflandırma için cross-entropy loss hesaplar, log(0) hatasını önlemek için y_pred'i epsilon ile sınırlar.
     
     Argümanlar:
-    y_true -- gerçek hedef değeri (0 veya 1) (int veya float)
+    y_target -- gerçek hedef değeri (0 veya 1) (int veya float)
     y_pred -- tahmin edilen olasılık değeri (0 ile 1 arasında) (float)
+    epsilon -- log(0) hatasını önlemek için eklenecek küçük sabit (default 1e-10) (float)
     
     Returns:
     loss -- cross-entropy kayıp değeri (float)
     """
-    return - (y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
+    # y_pred değerlerini epsilon ile sınırlandırarak log(0) hatasını önleyin
+    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
+    return - (y_target * np.log(y_pred) + (1 - y_target) * np.log(1 - y_pred))
 
-# Logistic Regression Modeli
 class LogisticRegressionSGD:
     def __init__(self, learning_rate=0.01, epochs=100):
         """

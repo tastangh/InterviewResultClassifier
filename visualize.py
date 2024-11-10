@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import os
+import mplcursors
 from dataset import load_data
 
 def plot_data(file_path):
@@ -20,8 +21,8 @@ def plot_data(file_path):
 
     # Grafik oluştur
     plt.figure(figsize=(8, 6))
-    plt.scatter(class_0[:, 0], class_0[:, 1], color='red', marker='x', label='Ret (0)', alpha=0.6)
-    plt.scatter(class_1[:, 0], class_1[:, 1], color='green', marker='o', label='Kabul (1)', alpha=0.6)
+    scatter_0 = plt.scatter(class_0[:, 0], class_0[:, 1], color='red', marker='x', label='Ret (0)', alpha=0.6)
+    scatter_1 = plt.scatter(class_1[:, 0], class_1[:, 1], color='green', marker='o', label='Kabul (1)', alpha=0.6)
 
     # Grafik etiketleri
     plt.xlabel("1. Sınav Notu")
@@ -33,6 +34,11 @@ def plot_data(file_path):
     save_path = "results/graphs"
     os.makedirs(save_path, exist_ok=True)
     plt.savefig(os.path.join(save_path, "sınıf_dağılımı.png"))
+
+    # Her bir nokta üzerine fareyi getirince sınav notlarını ve kabul/red bilgisini gösterme
+    cursor = mplcursors.cursor([scatter_0, scatter_1], hover=True)
+    cursor.connect("add", lambda sel: sel.annotation.set_text(
+        f"1. Sınav: {sel.target[0]:.2f}\n2. Sınav: {sel.target[1]:.2f}\nSonuç: {'Kabul' if sel.artist == scatter_1 else 'Ret'}"))
 
     # Grafiği göster
     plt.show()
