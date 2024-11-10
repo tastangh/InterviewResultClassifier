@@ -1,36 +1,101 @@
+import numpy as np
 from logistic_model import LogisticRegressionSGD
 from dataset import load_data, split_data
-from metrics import evaluate_metrics
+import os
+from datetime import datetime
+
+def confusion_matrix(y_target, y_pred):
+    """
+    Confusion matrix hesaplar ve TP, TN, FP, FN değerlerini döner.
+    
+    Args:
+        y_target (ndarray): Gerçek etiketler
+        y_pred (ndarray): Tahmin edilen etiketler
+        
+    Returns:
+        dict: Confusion matrix {TP, TN, FP, FN}
+    """
+    # Veri türlerini eşitle
+    y_target = y_target.astype(int)
+    y_pred = np.array(y_pred).astype(int)
+    
+    TP = np.sum((y_target == 1) & (y_pred == 1))
+    TN = np.sum((y_target == 0) & (y_pred == 0))
+    FP = np.sum((y_target == 0) & (y_pred == 1))
+    FN = np.sum((y_target == 1) & (y_pred == 0))
+    
+    # Confusion matrix değerlerini ekrana yazdırarak kontrol edin
+    print(f"TP: {TP}, TN: {TN}, FP: {FP}, FN: {FN}")
+    
+    return {"TP": TP, "TN": TN, "FP": FP, "FN": FN}
+
+
+def evaluate_metrics(y_target, y_pred):
+    """
+    Confusion matrix ile accuracy, precision, recall ve F1-score hesaplar.
+    
+    Args:
+        y_target (ndarray): Gerçek etiketler
+        y_pred (ndarray): Tahmin edilen etiketler
+        
+    Returns:
+        tuple: (accuracy, precision, recall, f1_score)
+    """
+    conf_matrix = confusion_matrix(y_target, y_pred)
+    TP = conf_matrix["TP"]
+    TN = conf_matrix["TN"]
+    FP = conf_matrix["FP"]
+    FN = conf_matrix["FN"]
+    
+    # Accuracy
+    accuracy = (TP + TN) / (TP + TN + FP + FN) if (TP + TN + FP + FN) != 0 else 0.0
+    
+    # Precision ve Recall
+    precision = TP / (TP + FP) if (TP + FP) != 0 else 0.0
+    recall = TP / (TP + FN) if (TP + FN) != 0 else 0.0
+    
+    # F1-Score
+    f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) != 0 else 0.0
+    
+    # Her metrik sonucunu ekrana yazdırarak kontrol edin
+    print(f"Accuracy: {accuracy}, Precision: {precision}, Recall: {recall}, F1-Score: {f1_score}")
+    
+    return accuracy, precision, recall, f1_score
+
 
 def evaluate_model_on_test_set(model, X_test, y_test):
     """
     Modeli test seti üzerinde değerlendirir ve performans metriklerini döndürür.
     
-    Argümanlar:
-    model -- eğitimli lojistik regresyon modeli (LogisticRegressionSGD)
-    X_test -- test seti özellik verileri (ndarray)
-    y_test -- test seti hedef verileri (ndarray)
-    
+    Args:
+        model -- eğitimli lojistik regresyon modeli (LogisticRegressionSGD)
+        X_test -- test seti özellik verileri (ndarray)
+        y_test -- test seti hedef verileri (ndarray)
+        
     Returns:
-    accuracy, precision, recall, f1_score -- değerlendirme metrikleri (float)
+        tuple: (accuracy, precision, recall, f1_score)
     """
+    # Test seti üzerinde tahmin yap
     y_test_pred = model.predict(X_test)
-    print("Tahminler:", y_test_pred)  # Tahmin sonuçlarını yazdırarak kontrol edin
+    
+    # Test setindeki gerçek etiketleri ve tahminleri yazdır
+    print("Gerçek Test Etiketleri:", y_test)
+    print("Modelin Tahminleri:", y_test_pred)
+    
+    # Performans metriklerini hesapla
     return evaluate_metrics(y_test, y_test_pred)
 
-import os
-from datetime import datetime
 
 def save_evaluation_results(accuracy, precision, recall, f1_score, log_dir="results"):
     """
     Test seti üzerinde elde edilen performans metriklerini zaman damgalı bir .txt dosyasına kaydeder.
     
-    Argümanlar:
-    accuracy -- doğruluk oranı (float)
-    precision -- precision değeri (float)
-    recall -- recall değeri (float)
-    f1_score -- F1-score değeri (float)
-    log_dir -- sonuçların kaydedileceği dizin yolu (str)
+    Args:
+        accuracy -- doğruluk oranı (float)
+        precision -- precision değeri (float)
+        recall -- recall değeri (float)
+        f1_score -- F1-score değeri (float)
+        log_dir -- sonuçların kaydedileceği dizin yolu (str)
     """
     # Zaman damgası eklemek
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -47,7 +112,6 @@ def save_evaluation_results(accuracy, precision, recall, f1_score, log_dir="resu
         f.write(f"Recall: {recall:.4f}\n")
         f.write(f"F1-Score: {f1_score:.4f}\n")
 
-
 def eval_model():
     """
     Test verisi üzerinde modeli değerlendirir ve sonuçları konsolda gösterir ve bir dosyaya kaydeder.
@@ -57,7 +121,7 @@ def eval_model():
     X_train, y_train, X_val, y_val, X_test, y_test = split_data(X, y)
 
     # Modeli eğit
-    model = LogisticRegressionSGD(learning_rate=0.01, epochs=100)
+    model = LogisticRegressionSGD(learning_rate=0.001, epochs=5000)
     model.fit(X_train, y_train, X_val, y_val)
 
     # Test seti üzerinde değerlendirme yap ve sonuçları kaydet

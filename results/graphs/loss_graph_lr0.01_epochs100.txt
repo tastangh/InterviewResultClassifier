@@ -1,0 +1,12 @@
+Eğitim kaybı (Training Loss) oldukça yüksek bir seviyede seyrediyor ve büyük dalgalanmalar içeriyor. Bu durum, modelin öğrenme sürecinde istikrarlı bir iyileşme göstermediğini ve doğru yönde ilerlemediğini gösterir.
+
+Doğrulama kaybı (Validation Loss) başlangıçta azalıyor, ancak çok hızlı bir şekilde yüksek seviyeye ulaşıyor ve sabitleniyor. Bu da modelin doğrulama setinde yeterince iyi performans gösteremediğini ve aşırı öğrenme (overfitting) belirtisi gösterdiğini işaret ediyor.
+
+Eğitim ve doğrulama kayıpları arasında büyük bir fark yok, ancak her iki kayıp da oldukça yüksek seviyede. Bu durumda model, veriyi yeterince öğrenemediği için eğitim ve doğrulama performansında iyi sonuçlar alamıyor. Bu genellikle underfitting (yetersiz öğrenme) olarak adlandırılır, ancak doğrulama performansı sabitlendiği ve dalgalanmalar arttığı için aşırı öğrenme (overfitting) riskine karşı da dikkatli olunmalıdır.
+
+İyileştirme Önerileri:
+
+Learning Rate'i Azaltma: Mevcut learning rate (0.01) modelin çok hızlı ve dengesiz bir şekilde öğrenmesine neden olabilir. Bu durumda, daha küçük bir learning rate denemek (0.001 veya 0.0001 gibi) modeli daha stabil hale getirebilir.
+Epoch Sayısını Artırma: Öğrenme oranını azaltarak daha fazla epoch (örneğin 500 veya 1000 epoch) eğitmek, modelin daha uzun süre boyunca daha dengeli bir şekilde öğrenmesini sağlayabilir.
+Veri Normalizasyonu: Modelinizin giriş verilerini normalleştirerek (örneğin, özellikleri [0,1] aralığına veya ortalama 0, standart sapma 1 olacak şekilde) daha stabil bir öğrenme süreci elde edebilirsiniz.
+Erken Durdurma: Doğrulama kaybı belirli bir noktadan sonra artmaya başladığında eğitim sürecini sonlandıran erken durdurma tekniğini kullanabilirsiniz. Bu, aşırı öğrenmeyi önlemeye yardımcı olur.
