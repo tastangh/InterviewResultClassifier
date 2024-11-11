@@ -26,17 +26,18 @@ class LogisticRegressionModel:
         """
         return 1 / (1 + np.exp(-z))
 
-    def _cross_entropy_loss(self, y_target, y_pred):
+    def _cross_entropy_loss(self, y_target, y_pred, epsilon=1e-10):
         """
         İkili sınıflandırma için cross-entropy loss hesaplar.
         
         Args:
             y_target -- gerçek hedef değeri
             y_pred -- tahmin edilen olasılık değeri
-        
+                    
         Returns:
             loss -- cross-entropy kayıp değeri
         """
+        # y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
         return - (y_target * np.log(y_pred) + (1 - y_target) * np.log(1 - y_pred))
 
     def fit(self, X, y, X_val=None, y_val=None):
