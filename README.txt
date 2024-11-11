@@ -17,10 +17,6 @@ pip install -r requirements.txt
 
 ## Çalıştırma
 python main.py
-ve bir işlem seçin:
-1: Modeli Eğit (train)
-2: Modeli Test Et (eval)
-3: Veriyi Görselleştir (visualize)
 
 ### Dosya Düzeni
 /InterviewResultClassifier
