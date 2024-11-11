@@ -12,8 +12,8 @@ def main():
     # plot_data(data_path)
     
     # Model eğitimi
-    learning_rate=0.01
-    epochs=5000000
+    learning_rate=0.0001
+    epochs=20000
     trainer = Trainer(learning_rate=learning_rate, epochs=epochs)
     model, training_losses, validation_losses = trainer.train(data_path)
     
