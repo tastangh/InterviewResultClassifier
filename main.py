@@ -1,38 +1,33 @@
-from train import train_model
-from eval import eval_model
+# main.py
+from train import Trainer
+from eval import Evaluator
 from visualize import plot_data
-
-# TODO : . Eğitim, doğrulama ve test örnekleri için accuracy, precision, recall ve f-scrore hesabını yapınız.(Şuan sadece test için yapıyoz)
+from dataset import DataProcessor
 
 def main():
-    """
-    Eğitim, test veya görselleştirme işlemlerini başlatır.
-    Kullanıcıdan bir işlem seçmesini ister ve ilgili işlemi çağırır.
-    """
-    print("Lütfen bir işlem seçin:")
-    print("1: Modeli Eğit (train)")
-    print("2: Modeli Test Et (eval)")
-    print("3: Veriyi Görselleştir (visualize)")
+    # Veri dosyasının yolu
+    data_path = "dataset/hw1Data.txt"
     
-    choice = input("Seçiminizi yapın (1/2/3): ")
-
-    if choice == '1':
-        print("\nModel eğitiliyor...\n")
-        train_model()
-        print("\nEğitim tamamlandı.")
-        
-    elif choice == '2':
-        print("\nModel test ediliyor...\n")
-        eval_model()
-        print("\nTest işlemi tamamlandı.")
-
-    elif choice == '3':
-        print("\nVeri görselleştiriliyor...\n")
-        plot_data("dataset/hw1Data.txt")
-        print("\nGörselleştirme tamamlandı.")
-
-    else:
-        print("Geçersiz seçim. Lütfen 1, 2 veya 3 girin.")
+    # Sınıf dağılım grafiği oluştur
+    plot_data(data_path)
+    
+    # Model eğitimi
+    trainer = Trainer(learning_rate=0.001, epochs=5000)
+    model, training_losses, validation_losses = trainer.train(data_path)
+    
+    # Model değerlendirme
+    dataset = DataProcessor(data_path)
+    X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
+    
+    evaluator = Evaluator(model)
+    train_metrics = evaluator.evaluate(X_train, y_train, "Eğitim Seti")
+    val_metrics = evaluator.evaluate(X_val, y_val, "Doğrulama Seti")
+    test_metrics = evaluator.evaluate(X_test, y_test, "Test Seti")
+    
+    # Değerlendirme sonuçlarını kaydet
+    evaluator.save_results(train_metrics, val_metrics, test_metrics, learning_rate=0.001, epochs=5000)
+    
+    print("Eğitim ve değerlendirme tamamlandı. Sonuçlar 'results' klasöründe kaydedildi.")
 
 if __name__ == "__main__":
     main()

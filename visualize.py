@@ -1,7 +1,8 @@
+# visualize.py
 import matplotlib.pyplot as plt
 import os
 import mplcursors
-from dataset import load_data
+from dataset import DataProcessor
 
 def plot_data(file_path):
     """
@@ -12,8 +13,9 @@ def plot_data(file_path):
     Argümanlar:
     file_path -- veri dosyasının yolu
     """
-    # Veriyi yükle
-    X, y = load_data(file_path)
+    # DataProcessor sınıfı ile veriyi yükle
+    dataset = DataProcessor(file_path)
+    X, y = dataset.X, dataset.y
 
     # Sınıfları ayır
     class_0 = X[y == 0]
