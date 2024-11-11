@@ -9,10 +9,12 @@ def main():
     data_path = "dataset/hw1Data.txt"
     
     # Sınıf dağılım grafiği oluştur
-    plot_data(data_path)
+    # plot_data(data_path)
     
     # Model eğitimi
-    trainer = Trainer(learning_rate=0.001, epochs=5000)
+    learning_rate=0.01
+    epochs=5000000
+    trainer = Trainer(learning_rate=learning_rate, epochs=epochs)
     model, training_losses, validation_losses = trainer.train(data_path)
     
     # Model değerlendirme
@@ -25,7 +27,7 @@ def main():
     test_metrics = evaluator.evaluate(X_test, y_test, "Test Seti")
     
     # Değerlendirme sonuçlarını kaydet
-    evaluator.save_results(train_metrics, val_metrics, test_metrics, learning_rate=0.001, epochs=5000)
+    evaluator.save_results(train_metrics, val_metrics, test_metrics, learning_rate=learning_rate, epochs=epochs)
     
     print("Eğitim ve değerlendirme tamamlandı. Sonuçlar 'results' klasöründe kaydedildi.")
 

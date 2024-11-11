@@ -36,7 +36,7 @@ class Trainer:
         plt.xlabel("Epoch")
         plt.ylabel("Cross-Entropy Loss")
         plt.legend()
-        plt.title("Eğitim ve Doğrulama Kayıpları")
+        plt.title(f"Eğitim ve Doğrulama Kayıpları (lr: {self.learning_rate}, epochs: {self.epochs})")
         plt.savefig(save_path)
         plt.show()
 
