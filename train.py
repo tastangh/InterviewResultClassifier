@@ -55,3 +55,14 @@ class Trainer:
         self.plot_loss_graph(training_losses, validation_losses)
         
         return self.model, training_losses, validation_losses
+
+if __name__ == "__main__":
+    learning_rate = 0.0001
+    epochs = 20000
+    data_path = "dataset/hw1Data.txt"
+    
+    # Trainer sınıfını başlat ve modeli eğit
+    trainer = Trainer(learning_rate=learning_rate, epochs=epochs)
+    model, training_losses, validation_losses = trainer.train(data_path)
+    
+    print("Eğitim tamamlandı. Eğitim logu ve kayıp grafiği 'results' dizininde kaydedildi.")

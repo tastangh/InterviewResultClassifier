@@ -64,3 +64,29 @@ class Evaluator:
                 f.write(f"  Precision: {metrics['precision']:.4f}\n")
                 f.write(f"  Recall: {metrics['recall']:.4f}\n")
                 f.write(f"  F1-Score: {metrics['f1_score']:.4f}\n\n")
+
+
+
+if __name__ == "__main__":
+    from dataset import DataProcessor
+    from logistic_model import LogisticRegressionModel  
+
+    # Değerlendirme için veri yolu ve parametreleri ayarlayın
+    data_path = "dataset/hw1Data.txt"
+    learning_rate = 0.0001
+    epochs = 20000
+    
+    # Modeli başlat ve eğit
+    model = LogisticRegressionModel(learning_rate=learning_rate, epochs=epochs)
+    dataset = DataProcessor(data_path)
+    X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
+    model.fit(X_train, y_train, X_val, y_val)  
+    
+    # Değerlendirme işlemini başlat
+    evaluator = Evaluator(model)
+    train_metrics = evaluator.evaluate(X_train, y_train, "Eğitim Seti")
+    val_metrics = evaluator.evaluate(X_val, y_val, "Doğrulama Seti")
+    test_metrics = evaluator.evaluate(X_test, y_test, "Test Seti")
+    
+    evaluator.save_results(train_metrics, val_metrics, test_metrics, learning_rate=learning_rate, epochs=epochs)
+    print("Değerlendirme tamamlandı. Sonuçlar 'results' dizininde kaydedildi.")
