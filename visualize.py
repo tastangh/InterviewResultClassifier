@@ -44,3 +44,10 @@ def plot_data(file_path):
 
     # Grafiği göster
     plt.show()
+
+if __name__ == "__main__":
+    # Sabit dosya yolu tanımla
+    data_path = "dataset/hw1Data.txt"
+    
+    # plot_data fonksiyonunu çağırma
+    plot_data(data_path)
