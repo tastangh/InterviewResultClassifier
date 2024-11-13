@@ -1,0 +1,22 @@
+Sonuçlar:
+Learning Rate: 0.01
+Epochs: 20000
+
+Eğitim Seti:
+  Accuracy: 0.8333
+  Precision: 0.9231
+  Recall: 0.7500
+  F1-Score: 0.8276
+
+Doğrulama Seti:
+  Accuracy: 0.7500
+  Precision: 1.0000
+  Recall: 0.5455
+  F1-Score: 0.7059
+
+Test Seti:
+  Accuracy: 0.7500
+  Precision: 1.0000
+  Recall: 0.7059
+  F1-Score: 0.8276
+
