@@ -10,6 +10,7 @@ Sınıf Dağılımı görselleştirilmesinde grafik üzerinde inceleme yapabilme
 ## Gereksinimler
 Bu projeyi çalıştırmak için aşağıdaki Python paketleri gereklidir:
 - numpy
+- pickle
 - pandas
 - matplotlib
 - mplcursors

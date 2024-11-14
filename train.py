@@ -1,6 +1,6 @@
-# train.py
 import matplotlib.pyplot as plt
 import os
+import pickle
 from dataset import DataProcessor
 from logistic_model import LogisticRegressionModel
 
@@ -16,20 +16,21 @@ class Trainer:
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.model = LogisticRegressionModel(learning_rate=self.learning_rate, epochs=self.epochs)
+        self.results_dir = f"results/lr_{self.learning_rate}_epochs_{self.epochs}"
+        self.model_dir = os.path.join(self.results_dir, "model")
 
     def initialize_results_directory(self):
-        os.makedirs("results", exist_ok=True)
-        os.makedirs("results/graphs", exist_ok=True)
+        os.makedirs(self.model_dir, exist_ok=True)
 
     def save_training_log(self, epoch, training_losses, validation_losses):
-        log_path = f"results/train_log_lr{self.learning_rate}_epochs{self.epochs}.txt"
+        log_path = os.path.join(self.results_dir, f"train_log_lr_{self.learning_rate}_epochs_{self.epochs}.txt")
         with open(log_path, "w") as f:
             f.write("Epoch\tTraining Loss\tValidation Loss\n")
             for e in range(epoch):
                 f.write(f"{e+1}\t\t{training_losses[e]:.4f}\t\t{validation_losses[e]:.4f}\n")
 
     def plot_loss_graph(self, training_losses, validation_losses):
-        save_path = f"results/graphs/loss_graph_lr{self.learning_rate}_epochs{self.epochs}.png"
+        save_path = os.path.join(self.results_dir, f"loss_graph_lr_{self.learning_rate}_epochs_{self.epochs}.png")
         plt.figure(figsize=(10, 6))
         plt.plot(training_losses, label="Training Loss")
         plt.plot(validation_losses, label="Validation Loss")
@@ -39,6 +40,17 @@ class Trainer:
         plt.title(f"Eğitim ve Doğrulama Kayıpları (lr: {self.learning_rate}, epochs: {self.epochs})")
         plt.savefig(save_path)
         plt.show()
+
+    def save_model(self):
+        model_path = os.path.join(self.model_dir, f"logistic_model_lr_{self.learning_rate}_epochs_{self.epochs}.pkl")
+        with open(model_path, "wb") as f:
+            pickle.dump(self.model, f)
+        print(f"Model '{model_path}' konumuna kaydedildi.")
+
+    def load_model(self, model_path):
+        with open(model_path, "rb") as f:
+            self.model = pickle.load(f)
+        print(f"Model '{model_path}' konumundan yüklendi.")
 
     def train(self, file_path="dataset/hw1Data.txt"):
         dataset = DataProcessor(file_path)
@@ -54,15 +66,18 @@ class Trainer:
         self.save_training_log(len(training_losses), training_losses, validation_losses)
         self.plot_loss_graph(training_losses, validation_losses)
         
+        # Eğitilmiş modeli kaydet
+        self.save_model()
+        
         return self.model, training_losses, validation_losses
 
 if __name__ == "__main__":
     learning_rate = 0.0001
-    epochs = 20000
+    epochs = 5000
     data_path = "dataset/hw1Data.txt"
     
     # Trainer sınıfını başlat ve modeli eğit
     trainer = Trainer(learning_rate=learning_rate, epochs=epochs)
     model, training_losses, validation_losses = trainer.train(data_path)
     
-    print("Eğitim tamamlandı. Eğitim logu ve kayıp grafiği 'results' dizininde kaydedildi.")
+    print("Eğitim tamamlandı. Eğitim logu, kayıp grafiği ve model 'results' dizininde kaydedildi.")
