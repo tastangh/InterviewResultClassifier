@@ -33,7 +33,7 @@ def plot_data(file_path):
     plt.legend()
 
     # Klasör oluşturma ve grafiği kaydetme
-    save_path = "results/graphs"
+    save_path = "results/"
     os.makedirs(save_path, exist_ok=True)
     plt.savefig(os.path.join(save_path, "sınıf_dağılımı.png"))
 

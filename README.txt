@@ -10,7 +10,6 @@ Sınıf Dağılımı görselleştirilmesinde grafik üzerinde inceleme yapabilme
 ## Gereksinimler
 Bu projeyi çalıştırmak için aşağıdaki Python paketleri gereklidir:
 - numpy
-- pickle
 - pandas
 - matplotlib
 - mplcursors
@@ -30,7 +29,6 @@ python eval.py
 
 ### Dosya Düzeni
 /InterviewResultClassifier
-   |- main.py               # üç özelliği aynı anda yapmak için
    |- train.py              # Eğitim ve loss çıktısı ve grafiği oluşturma
    |- eval.py               # Eğitime sokulan bir modeli metriklere  göre değerlendirme
    |- dataset.py            # Veriyi yükme ve eğitim, doğrulama, test setlerine bölme
@@ -39,4 +37,4 @@ python eval.py
    |- README.txt            # Proje Açıklaması
    |- requirements.txt      # Gereksinimler
    |- dataset/hw1Data.txt   # dataset
-   |- results/              # Çıktılar (graphs içinde grafikler ana bölmede ise loss çıktıları ve değerlendirme çıktıları lr ve epoch'a göre verilir.)
+   |- results/              # Çıktılar learning rate ve epoch bazlı olarak ayrı ayrı kaydedilir

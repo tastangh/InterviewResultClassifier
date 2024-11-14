@@ -1,5 +1,4 @@
 numpy
-pickle
 pandas
 matplotlib
 mplcursors

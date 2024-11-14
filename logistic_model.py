@@ -1,13 +1,24 @@
 import numpy as np
 
 class LogisticRegressionModel:
+    """
+    Basit bir lojistik regresyon modeli sınıfı.
+    Model, verilen öğrenme oranı ve epoch sayısına göre eğitim yapar.
+    
+    Özellikler:
+        learning_rate (float): Modeli eğitmek için kullanılan öğrenme oranı.
+        epochs (int): Modelin eğitimde geçireceği epoch sayısı.
+        weights (numpy.ndarray): Modelin özellik ağırlıkları.
+        bias (float): Modelin bias değeri.
+    """
+
     def __init__(self, learning_rate=0.01, epochs=100):
         """
         Lojistik regresyon modelini başlatır.
         
         Args:
-            learning_rate -- öğrenme oranı
-            epochs -- epoch sayısı
+            learning_rate (float): Öğrenme oranı. Varsayılan 0.01.
+            epochs (int): Epoch sayısı. Varsayılan 100.
         """
         self.learning_rate = learning_rate
         self.epochs = epochs
@@ -19,40 +30,39 @@ class LogisticRegressionModel:
         Sigmoid aktivasyon fonksiyonu.
         
         Args:
-            z -- girdi değeri veya değerler dizisi
+            z (numpy.ndarray): Girdi değeri veya değerler dizisi.
         
         Returns:
-            result -- sigmoid fonksiyonunun sonucu
+            numpy.ndarray: Sigmoid fonksiyonunun sonucu.
         """
         return 1 / (1 + np.exp(-z))
 
-    def _cross_entropy_loss(self, y_target, y_pred, epsilon=1e-10):
+    def _cross_entropy_loss(self, y_target, y_pred):
         """
-        İkili sınıflandırma için cross-entropy loss hesaplar.
+        İkili sınıflandırma için cross-entropy kaybını hesaplar.
         
         Args:
-            y_target -- gerçek hedef değeri
-            y_pred -- tahmin edilen olasılık değeri
-                    
+            y_target (int): Gerçek hedef değeri (0 veya 1).
+            y_pred (float): Tahmin edilen olasılık değeri.
+        
         Returns:
-            loss -- cross-entropy kayıp değeri
+            float: Cross-entropy kayıp değeri.
         """
-        # y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
         return - (y_target * np.log(y_pred) + (1 - y_target) * np.log(1 - y_pred))
 
     def fit(self, X, y, X_val=None, y_val=None):
         """
-        Lojistik regresyon modelini eğitir.
+        Lojistik regresyon modelini eğitim verileri ile eğitir.
         
         Args:
-            X -- eğitim verisi
-            y -- eğitim etiketleri
-            X_val -- doğrulama verisi
-            y_val -- doğrulama etiketleri
+            X (numpy.ndarray): Eğitim verisi, her satır bir örneği temsil eder.
+            y (numpy.ndarray): Eğitim etiketleri, 0 veya 1 değerlerinden oluşur.
+            X_val (numpy.ndarray, opsiyonel): Doğrulama verisi, varsayılan None.
+            y_val (numpy.ndarray, opsiyonel): Doğrulama etiketleri, varsayılan None.
         
         Returns:
-            training_losses -- eğitim kayıpları listesi
-            validation_losses -- doğrulama kayıpları listesi
+                training_losses (list of float): Her epoch için eğitim kayıpları listesi.
+                validation_losses (list of float): Her epoch için doğrulama kayıpları listesi (eğer doğrulama verisi varsa).
         """
         m, n = X.shape
         self.weights = np.zeros(n)
@@ -65,7 +75,7 @@ class LogisticRegressionModel:
                 xi = X[i].reshape(1, -1)
                 yi = y[i]
                 
-                # Tahmin ve loss hesaplama
+                # Tahmin ve kayıp hesaplama
                 linear_model = np.dot(xi, self.weights) + self.bias
                 y_pred = self._sigmoid(linear_model).squeeze()
                 loss = self._cross_entropy_loss(yi, y_pred)
@@ -94,10 +104,10 @@ class LogisticRegressionModel:
         Eğitimli model ile tahmin yapar.
         
         Args:
-            X -- tahmin yapılacak veri seti
+            X (numpy.ndarray): Tahmin yapılacak veri seti, her satır bir örneği temsil eder.
         
         Returns:
-            predictions -- tahmin edilen etiketler listesi
+            list of int: Tahmin edilen etiketler (0 veya 1) listesi.
         """
         linear_model = np.dot(X, self.weights) + self.bias
         predictions = self._sigmoid(linear_model)

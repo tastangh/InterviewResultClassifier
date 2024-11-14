@@ -5,7 +5,26 @@ import matplotlib.pyplot as plt
 from dataset import DataProcessor
 
 class Evaluator:
+    """
+    Bir modeli çeşitli metrikler hesaplayarak değerlendirir ve confusion matrisi grafiğini oluşturur.
+
+    Özellikler:
+        model (object): Değerlendirilecek eğitilmiş model.
+        learning_rate (float): Modeli eğitmek için kullanılan öğrenme oranı.
+        epochs (int): Eğitimde kullanılan epoch sayısı.
+        results_dir (str): Değerlendirme sonuçlarını ve modeli kaydetmek için klasör yolu.
+        model_path (str): Kaydedilmiş model dosyasının yolu.
+    """
+
     def __init__(self, model=None, learning_rate=0.001, epochs=5000):
+        """
+        Model, öğrenme oranı ve epoch ayarları ile Evaluator'ü başlatır.
+
+        Args:
+            model (object, opsiyonel): Değerlendirilecek model. Varsayılan None.
+            learning_rate (float, opsiyonel): Öğrenme oranı. Varsayılan 0.001.
+            epochs (int, opsiyonel): Epoch sayısı. Varsayılan 5000.
+        """
         self.model = model
         self.learning_rate = learning_rate
         self.epochs = epochs
@@ -13,7 +32,12 @@ class Evaluator:
         self.model_path = f"{self.results_dir}/model/logistic_model_lr_{self.learning_rate}_epochs_{self.epochs}.pkl"
         
     def load_model(self):
-        """Loads the model from the specified path if it exists."""
+        """
+        Belirtilen yoldan modeli yükler, eğer dosya mevcut değilse hata verir.
+        
+        Raises:
+            FileNotFoundError: Eğer model belirtilen yolda bulunamazsa.
+        """
         if os.path.exists(self.model_path):
             with open(self.model_path, "rb") as f:
                 self.model = pickle.load(f)
@@ -21,6 +45,17 @@ class Evaluator:
             raise FileNotFoundError(f"'{self.model_path}' yolunda model bulunamadı. Lütfen yolu kontrol edin veya modeli önce eğitin.")
     
     def confusion_matrix(self, y_target, y_pred, dataset_name="dataset"):
+        """
+        Hedef ve tahmin edilen değerlerle confusion matrisi hesaplar ve grafiğini çizer.
+        
+        Args:
+            y_target (numpy.ndarray): Gerçek değerler.
+            y_pred (numpy.ndarray): Tahmin edilen değerler.
+            dataset_name (str, opsiyonel): Veriseti adı. Varsayılan 'dataset'.
+        
+        Returns:
+            dict: confusion matrisi değerleri ("TP", "TN", "FP", "FN").
+        """
         y_target = y_target.astype(int)
         y_pred = np.array(y_pred).astype(int)
         
@@ -43,35 +78,51 @@ class Evaluator:
         return {"TP": TP, "TN": TN, "FP": FP, "FN": FN}
 
     def plot_confusion_matrix(self, TP, TN, FP, FN, dataset_name):
-        # Confusion matrix array with respective labels
-        matrix = np.array([[TP, FN], [FP, TN]])  # Adjusted for new axis arrangement
+        """
+        confusion matrisi değerleri ile grafiğini çizer ve kaydeder.
+
+        Args:
+            TP (int): Doğru Pozitif sayısı.
+            TN (int): Doğru Negatif sayısı.
+            FP (int): Yanlış Pozitif sayısı.
+            FN (int): Yanlış Negatif sayısı.
+            dataset_name (str): Veriseti adı.
+        """
+        matrix = np.array([[TP, FN], [FP, TN]])
         
         fig, ax = plt.subplots()
         ax.matshow(matrix, cmap="Blues", alpha=0.7)
         
-        # Annotating each cell with the count and label
         labels = [["TP", "FN"], ["FP", "TN"]]
         for (i, j), val in np.ndenumerate(matrix):
             label = labels[i][j]
             ax.text(j, i, f"{label}: {val}", ha="center", va="center", fontsize=12)
         
-        # Setting x and y axis labels to the specified order
         ax.set_xticks([0, 1])
         ax.set_yticks([0, 1])
         ax.set_xticklabels(["Tahmin 1", "Tahmin 0"])
         ax.set_yticklabels(["Gerçek 1", "Gerçek 0"])
         
-        # Adding axis titles
         ax.set_xlabel("Tahmin")
         ax.set_ylabel("Gerçek")
         plt.title(f"Confusion Matrix - {dataset_name}")
         
-        # Saving the modified confusion matrix plot
         os.makedirs(self.results_dir, exist_ok=True)
         plt.savefig(os.path.join(self.results_dir, f"confusion_matrix_{dataset_name}_lr_{self.learning_rate}_epochs_{self.epochs}.png"))
         plt.close()
         
     def evaluate_metrics(self, y_target, y_pred, dataset_name="veriseti"):
+        """
+        Belirtilen hedef ve tahmin edilen değerlerle metrikleri hesaplar.
+
+        Args:
+            y_target (numpy.ndarray): Gerçek değerler.
+            y_pred (numpy.ndarray): Tahmin edilen değerler.
+            dataset_name (str, opsiyonel): Veriseti adı. Varsayılan 'veriseti'.
+
+        Returns:
+            dict: Metrik değerleri ("accuracy", "precision", "recall", "f1_score").
+        """
         conf_matrix = self.confusion_matrix(y_target, y_pred, dataset_name)
         TP, TN, FP, FN = conf_matrix["TP"], conf_matrix["TN"], conf_matrix["FP"], conf_matrix["FN"]
         
@@ -88,19 +139,39 @@ class Evaluator:
         }
 
     def evaluate(self, X, y, dataset_name="test"):
-        # Ensure the model is loaded
+        """
+        Belirtilen veri üzerinde model performansını değerlendirir.
+
+        Args:
+            X (numpy.ndarray): Özellikler matrisi.
+            y (numpy.ndarray): Etiketler.
+            dataset_name (str, opsiyonel): Veriseti adı. Varsayılan 'test'.
+
+        Returns:
+            dict: Model performans metrikleri.
+        
+        Raises:
+            FileNotFoundError: Model yüklenemezse.
+        """
         try:
             self.load_model()
         except FileNotFoundError as e:
             print(e)
             raise 
 
-        # Proceed with evaluation if model is loaded successfully
         y_pred = self.model.predict(X)
         metrics = self.evaluate_metrics(y, y_pred, dataset_name)
         return metrics
 
     def save_results(self, train_metrics, val_metrics, test_metrics):
+        """
+        Eğitim, doğrulama ve test metrik sonuçlarını dosyaya kaydeder.
+
+        Args:
+            train_metrics (dict): Eğitim seti metrikleri.
+            val_metrics (dict): Doğrulama seti metrikleri.
+            test_metrics (dict): Test seti metrikleri.
+        """
         os.makedirs(self.results_dir, exist_ok=True)
         log_path = os.path.join(self.results_dir, f"eval_results_lr_{self.learning_rate}_epochs_{self.epochs}.txt")
         with open(log_path, "w") as f:
@@ -119,19 +190,30 @@ class Evaluator:
                 f.write(f"  F1-Score: {metrics['f1_score']:.4f}\n")
 
 if __name__ == "__main__":
+    """
+    Ana program: Modeli değerlendirir ve sonuçları kaydeder.
+    - Öğrenme oranı ve epoch sayısı ile bir Evaluator nesnesi oluşturur.
+    - Veriyi eğitim, doğrulama ve test setleri olarak böler.
+    - Her bir veri seti için değerlendirme metriklerini hesaplar.
+    - Sonuçları bir dosyaya kaydeder.
+    """
     learning_rate = 0.0001
     epochs = 5000
     data_path = "dataset/hw1Data.txt"
 
+    # Evaluator oluşturma
     evaluator = Evaluator(learning_rate=learning_rate, epochs=epochs)
 
+    # Veriyi yükleyip eğitim, doğrulama ve test setlerine ayırma
     dataset = DataProcessor(data_path)
     X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
     
+    # Her veri seti için değerlendirme
     train_metrics = evaluator.evaluate(X_train, y_train, "Eğitim")
     val_metrics = evaluator.evaluate(X_val, y_val, "Doğrulama")
     test_metrics = evaluator.evaluate(X_test, y_test, "Test")
     
+    # Değerlendirme sonuçlarını kaydetme
     if train_metrics and val_metrics and test_metrics:
         evaluator.save_results(train_metrics, val_metrics, test_metrics)
         print("Değerlendirme tamamlandı. Sonuçlar 'results' klasörüne kaydedildi.")
