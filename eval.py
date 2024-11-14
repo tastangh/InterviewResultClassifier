@@ -10,16 +10,16 @@ class Evaluator:
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.results_dir = f"results/lr_{self.learning_rate}_epochs_{self.epochs}"
+        self.model_path = f"{self.results_dir}/model/logistic_model_lr_{self.learning_rate}_epochs_{self.epochs}.pkl"
         
-    def load_model(self, model_path):
+    def load_model(self):
         """Loads the model from the specified path if it exists."""
-        if os.path.exists(model_path):
-            with open(model_path, "rb") as f:
+        if os.path.exists(self.model_path):
+            with open(self.model_path, "rb") as f:
                 self.model = pickle.load(f)
-            print(f"Model '{model_path}' başarıyla yüklendi.")
         else:
-            raise FileNotFoundError(f"'{model_path}' yolunda model bulunamadı. Lütfen yolu kontrol edin veya modeli önce eğitin.")
-
+            raise FileNotFoundError(f"'{self.model_path}' yolunda model bulunamadı. Lütfen yolu kontrol edin veya modeli önce eğitin.")
+    
     def confusion_matrix(self, y_target, y_pred, dataset_name="dataset"):
         y_target = y_target.astype(int)
         y_pred = np.array(y_pred).astype(int)
@@ -34,7 +34,7 @@ class Evaluator:
         print(f"TN (True Negative): {TN}")
         print(f"FP (False Positive): {FP}")
         print(f"FN (False Negative): {FN}")
-        
+
         print(f"\nGerçek Değerler (y_target) for {dataset_name}:", y_target)
         print(f"Tahmin Değerleri (y_pred) for {dataset_name}: ", y_pred)
 
@@ -88,8 +88,14 @@ class Evaluator:
         }
 
     def evaluate(self, X, y, dataset_name="test"):
-        if self.model is None:
-            raise ValueError("Model yüklenmedi. Değerlendirme yapmadan önce modeli yükleyin.")
+        # Ensure the model is loaded
+        try:
+            self.load_model()
+        except FileNotFoundError as e:
+            print(e)
+            raise 
+
+        # Proceed with evaluation if model is loaded successfully
         y_pred = self.model.predict(X)
         metrics = self.evaluate_metrics(y, y_pred, dataset_name)
         return metrics
@@ -113,19 +119,12 @@ class Evaluator:
                 f.write(f"  F1-Score: {metrics['f1_score']:.4f}\n")
 
 if __name__ == "__main__":
-    
     learning_rate = 0.0001
     epochs = 5000
-    model_path = f"results/lr_{learning_rate}_epochs_{epochs}/model/logistic_model_lr_{learning_rate}_epochs_{epochs}.pkl"
     data_path = "dataset/hw1Data.txt"
-    
+
     evaluator = Evaluator(learning_rate=learning_rate, epochs=epochs)
-    try:
-        evaluator.load_model(model_path)
-    except FileNotFoundError as e:
-        print(e)
-        exit(1)
-    
+
     dataset = DataProcessor(data_path)
     X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
     
@@ -133,5 +132,6 @@ if __name__ == "__main__":
     val_metrics = evaluator.evaluate(X_val, y_val, "Doğrulama")
     test_metrics = evaluator.evaluate(X_test, y_test, "Test")
     
-    evaluator.save_results(train_metrics, val_metrics, test_metrics)
-    print("Değerlendirme tamamlandı. Sonuçlar 'results' klasörüne kaydedildi.")
+    if train_metrics and val_metrics and test_metrics:
+        evaluator.save_results(train_metrics, val_metrics, test_metrics)
+        print("Değerlendirme tamamlandı. Sonuçlar 'results' klasörüne kaydedildi.")
