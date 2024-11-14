@@ -37,17 +37,19 @@ class LogisticRegressionModel:
         """
         return 1 / (1 + np.exp(-z))
 
-    def _cross_entropy_loss(self, y_target, y_pred):
+    def _cross_entropy_loss(self, y_target, y_pred, epsilon=1e-10):
         """
         İkili sınıflandırma için cross-entropy kaybını hesaplar.
         
         Args:
             y_target (int): Gerçek hedef değeri (0 veya 1).
             y_pred (float): Tahmin edilen olasılık değeri.
+            epsilon (float): Sayısal kararlılık için kullanılan küçük sabit, varsayılan 1e-10.
         
         Returns:
             float: Cross-entropy kayıp değeri.
         """
+        y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
         return - (y_target * np.log(y_pred) + (1 - y_target) * np.log(1 - y_pred))
 
     def fit(self, X, y, X_val=None, y_val=None):
@@ -61,8 +63,8 @@ class LogisticRegressionModel:
             y_val (numpy.ndarray, opsiyonel): Doğrulama etiketleri, varsayılan None.
         
         Returns:
-                training_losses (list of float): Her epoch için eğitim kayıpları listesi.
-                validation_losses (list of float): Her epoch için doğrulama kayıpları listesi (eğer doğrulama verisi varsa).
+            training_losses (list of float): Her epoch için eğitim kayıpları listesi.
+            validation_losses (list of float): Her epoch için doğrulama kayıpları listesi (eğer doğrulama verisi varsa).
         """
         m, n = X.shape
         self.weights = np.zeros(n)
