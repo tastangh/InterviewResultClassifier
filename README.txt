@@ -19,13 +19,10 @@ Gerekli paketleri aşağıdaki komutla yükleyebilirsiniz:
 pip install -r requirements.txt
 
 ## Çalıştırma
-Aşağıdaki 3 özelliği aynı anda yapmak için;
-python main.py
-
 1- Sınıf Dağılımı görselleştirilmesi:
 python visualize.py
 
-2- Eğitim ve loss çıktısı ve grafiği oluşturma
+2- Model eğitimi ve loss çıktısı ve grafiği oluşturma
 python train.py
 
 3- Eğitime sokulan bir modeli metriklere  göre değerlendirme

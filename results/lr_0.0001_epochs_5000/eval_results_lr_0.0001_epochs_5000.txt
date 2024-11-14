@@ -1,6 +1,6 @@
 Değerlendirme Sonuçları:
-Learning Rate: 0.0001
-Epochs: 5000
+Öğrenme Oranı: 0.0001
+Epoch Sayısı: 5000
 
 Eğitim Seti:
   Accuracy: 0.6333
