@@ -81,7 +81,7 @@ class Trainer:
         plt.title(f"Eğitim ve Doğrulama Kayıpları (lr: {self.learning_rate}, epochs: {self.epochs})")
         
         # Eğitim süresini grafiğe ekle
-        plt.text(len(training_losses) * 0.5, max(training_losses) * 0.9, time_text, fontsize=10, ha='center', color='black')
+        plt.text(len(training_losses) * 0.5, max(training_losses) * 1, time_text, fontsize=10, ha='center', color='black')
         
         plt.savefig(save_path)
         plt.show()
@@ -141,8 +141,8 @@ if __name__ == "__main__":
     - Eğitim süreci sırasında kayıpları loglar ve kayıp grafiğini kaydeder.
     - Eğitilmiş modeli belirtilen dizine kaydeder.
     """
-    learning_rate = 0.00001
-    epochs = 500000
+    learning_rate = 0.0001
+    epochs = 500
     data_path = "dataset/hw1Data.txt"
     
     # Trainer sınıfını başlat ve modeli eğit
