@@ -197,8 +197,8 @@ if __name__ == "__main__":
     - Her bir veri seti için değerlendirme metriklerini hesaplar.
     - Sonuçları bir dosyaya kaydeder.
     """
-    learning_rate = 0.00001
-    epochs = 500000
+    learning_rate = 0.0001
+    epochs = 500
     data_path = "dataset/hw1Data.txt"
 
     # Evaluator oluşturma
