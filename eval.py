@@ -197,23 +197,24 @@ if __name__ == "__main__":
     - Her bir veri seti için değerlendirme metriklerini hesaplar.
     - Sonuçları bir dosyaya kaydeder.
     """
-    learning_rate = 0.0001
-    epochs = 500
+    learning_rates = [0.01, 0.001, 0.0001, 0.00001, 0.000001]
+    epochs_list = [200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000,200000,500000]
     data_path = "dataset/hw1Data.txt"
+    for learning_rate in learning_rates:
+        for epochs in epochs_list:
+            # Evaluator oluşturma
+            evaluator = Evaluator(learning_rate=learning_rate, epochs=epochs)
 
-    # Evaluator oluşturma
-    evaluator = Evaluator(learning_rate=learning_rate, epochs=epochs)
-
-    # Veriyi yükleyip eğitim, doğrulama ve test setlerine ayırma
-    dataset = DataProcessor(data_path)
-    X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
-    
-    # Her veri seti için değerlendirme
-    train_metrics = evaluator.evaluate(X_train, y_train, "Eğitim")
-    val_metrics = evaluator.evaluate(X_val, y_val, "Doğrulama")
-    test_metrics = evaluator.evaluate(X_test, y_test, "Test")
-    
-    # Değerlendirme sonuçlarını kaydetme
-    if train_metrics and val_metrics and test_metrics:
-        evaluator.save_results(train_metrics, val_metrics, test_metrics)
-        print("Değerlendirme tamamlandı. Sonuçlar 'results' klasörüne kaydedildi.")
+            # Veriyi yükleyip eğitim, doğrulama ve test setlerine ayırma
+            dataset = DataProcessor(data_path)
+            X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
+            
+            # Her veri seti için değerlendirme
+            train_metrics = evaluator.evaluate(X_train, y_train, "Eğitim")
+            val_metrics = evaluator.evaluate(X_val, y_val, "Doğrulama")
+            test_metrics = evaluator.evaluate(X_test, y_test, "Test")
+            
+            # Değerlendirme sonuçlarını kaydetme
+            if train_metrics and val_metrics and test_metrics:
+                evaluator.save_results(train_metrics, val_metrics, test_metrics)
+                print("Değerlendirme tamamlandı. Sonuçlar 'results' klasörüne kaydedildi.")

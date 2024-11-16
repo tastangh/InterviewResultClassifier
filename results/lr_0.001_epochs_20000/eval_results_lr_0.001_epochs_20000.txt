@@ -1,0 +1,19 @@
+Değerlendirme Sonuçları:
+Öğrenme Oranı: 0.001
+Epoch Sayısı: 20000
+
+Eğitim Seti:
+  Accuracy: 0.8833
+  Precision: 0.8205
+  Recall: 1.0000
+  F1-Score: 0.9014
+Doğrulama Seti:
+  Accuracy: 0.9500
+  Precision: 0.9167
+  Recall: 1.0000
+  F1-Score: 0.9565
+Test Seti:
+  Accuracy: 0.9500
+  Precision: 1.0000
+  Recall: 0.9412
+  F1-Score: 0.9697

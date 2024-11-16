@@ -84,7 +84,7 @@ class Trainer:
         plt.text(len(training_losses) * 0.5, max(training_losses) * 1, time_text, fontsize=10, ha='center', color='black')
         
         plt.savefig(save_path)
-        plt.show()
+        # plt.show()
 
     def save_model(self):
         """
