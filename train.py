@@ -106,7 +106,6 @@ class Trainer:
         Returns:
             tuple: (model, training_losses, validation_losses) - Eğitilmiş model, eğitim ve doğrulama kayıpları.
         """
-        import time
 
         # Eğitim başlangıç zamanını kaydet
         start_time = time.time()
