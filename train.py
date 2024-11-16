@@ -4,6 +4,7 @@ import pickle
 import matplotlib.pyplot as plt
 from dataset import DataProcessor
 from logistic_model import LogisticRegressionModel
+import time
 
 class Trainer:
     """
@@ -53,15 +54,24 @@ class Trainer:
             for e in range(epoch):
                 f.write(f"{e+1}\t\t{training_losses[e]:.4f}\t\t{validation_losses[e]:.4f}\n")
 
-    def plot_loss_graph(self, training_losses, validation_losses):
+
+    def plot_loss_graph(self, training_losses, validation_losses, elapsed_time):
         """
-        Eğitim ve doğrulama kayıplarının grafiksel gösterimini oluşturur ve kaydeder.
+        Eğitim ve doğrulama kayıplarının grafiksel gösterimini oluşturur, eğitim süresini ekler ve kaydeder.
 
         Args:
             training_losses (list of float): Eğitim kayıpları listesi.
             validation_losses (list of float): Doğrulama kayıpları listesi.
+            elapsed_time (float): Eğitim süresi (saniye cinsinden).
         """
         save_path = os.path.join(self.results_dir, f"loss_graph_lr_{self.learning_rate}_epochs_{self.epochs}.png")
+        
+        # Zamanı saat:dakika:saniye:salise formatına dönüştür
+        hours, rem = divmod(elapsed_time, 3600)
+        minutes, seconds = divmod(rem, 60)
+        milliseconds = (elapsed_time - int(elapsed_time)) * 1000
+        time_text = f"Eğitim Süresi: {int(hours):02}:{int(minutes):02}:{int(seconds):02}:{int(milliseconds):03}"
+
         plt.figure(figsize=(10, 6))
         plt.plot(training_losses, label="Training Loss")
         plt.plot(validation_losses, label="Validation Loss")
@@ -69,6 +79,10 @@ class Trainer:
         plt.ylabel("Cross-Entropy Loss")
         plt.legend()
         plt.title(f"Eğitim ve Doğrulama Kayıpları (lr: {self.learning_rate}, epochs: {self.epochs})")
+        
+        # Eğitim süresini grafiğe ekle
+        plt.text(len(training_losses) * 0.5, max(training_losses) * 0.9, time_text, fontsize=10, ha='center', color='black')
+        
         plt.savefig(save_path)
         plt.show()
 
@@ -83,7 +97,7 @@ class Trainer:
 
     def train(self, file_path="dataset/hw1Data.txt"):
         """
-        Veriyi yükleyip eğitim ve doğrulama setlerine ayırır, modeli eğitir, kayıp loglarını ve grafiğini oluşturur, 
+        Veriyi yükleyip eğitim ve doğrulama setlerine ayırır, modeli eğitir, kayıp loglarını ve grafiğini oluşturur,
         eğitilmiş modeli kaydeder.
 
         Args:
@@ -92,6 +106,11 @@ class Trainer:
         Returns:
             tuple: (model, training_losses, validation_losses) - Eğitilmiş model, eğitim ve doğrulama kayıpları.
         """
+        import time
+
+        # Eğitim başlangıç zamanını kaydet
+        start_time = time.time()
+
         # Veriyi yükleyip eğitim, doğrulama ve test setlerine ayırma
         dataset = DataProcessor(file_path)
         X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
@@ -102,9 +121,12 @@ class Trainer:
         # Modeli eğit ve kayıpları kaydet
         training_losses, validation_losses = self.model.fit(X_train, y_train, X_val, y_val)
         
+        # Eğitim süresini hesapla
+        elapsed_time = time.time() - start_time
+        
         # Eğitim loglarını ve grafikleri kaydet
         self.save_training_log(len(training_losses), training_losses, validation_losses)
-        self.plot_loss_graph(training_losses, validation_losses)
+        self.plot_loss_graph(training_losses, validation_losses, elapsed_time)
         
         # Eğitilmiş modeli kaydet
         self.save_model()
