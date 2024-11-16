@@ -57,7 +57,8 @@ class Trainer:
 
     def plot_loss_graph(self, training_losses, validation_losses, elapsed_time):
         """
-        Eğitim ve doğrulama kayıplarının grafiksel gösterimini oluşturur, eğitim süresini ekler ve kaydeder.
+        Eğitim ve doğrulama kayıplarının grafiksel gösterimini oluşturur, eğitim süresini ve
+        final kayıpları grafiğin altına ekler ve kaydeder.
 
         Args:
             training_losses (list of float): Eğitim kayıpları listesi.
@@ -72,6 +73,10 @@ class Trainer:
         milliseconds = (elapsed_time - int(elapsed_time)) * 1000
         time_text = f"Eğitim Süresi: {int(hours):02} saat {int(minutes):02} dakika {int(seconds):02} saniye {int(milliseconds):03} ms"
 
+        # Final eğitim ve doğrulama kayıplarını al
+        final_training_loss = training_losses[-1]
+        final_validation_loss = validation_losses[-1]
+
         plt.figure(figsize=(10, 6))
         plt.plot(training_losses, label="Training Loss")
         plt.plot(validation_losses, label="Validation Loss")
@@ -80,11 +85,18 @@ class Trainer:
         plt.legend()
         plt.title(f"Eğitim ve Doğrulama Kayıpları (lr: {self.learning_rate}, epochs: {self.epochs})")
         
-        # Eğitim süresini grafiğe ekle
-        plt.text(len(training_losses) * 0.5, max(training_losses) * 1, time_text, fontsize=10, ha='center', color='black')
-        
+        # Final kayıplar ve eğitim süresi alt köşeye ekle
+        final_text = (
+            f"Final Training Loss: {final_training_loss:.4f}\n"
+            f"Final Validation Loss: {final_validation_loss:.4f}\n"
+            f"{time_text}"
+        )
+        plt.subplots_adjust(bottom=0.25)  # Alt kenar için boşluk ayarla
+        plt.gcf().text(0.01, 0.03, final_text, fontsize=10, color='black', ha='left', va='bottom')  # Daha aşağı taşır
+
         plt.savefig(save_path)
-        # plt.show()
+        plt.show()
+        plt.close()
 
     def save_model(self):
         """
