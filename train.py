@@ -95,7 +95,7 @@ class Trainer:
         plt.gcf().text(0.01, 0.03, final_text, fontsize=10, color='black', ha='left', va='bottom')  # Daha aşağı taşır
 
         plt.savefig(save_path)
-        plt.show()
+        # plt.show()
         plt.close()
 
     def save_model(self):
