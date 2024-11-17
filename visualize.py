@@ -81,11 +81,11 @@ class DataVisualizer:
 if __name__ == "__main__":
     data_path = "dataset/hw1Data.txt"
 
-    # Görselleştirme sınıfı oluştur
+    # Görselleştirme sınıfı oluşturma
     visualizer = DataVisualizer(data_path)
 
-    # Tüm veri setini çiz
+    # Tüm veri setini çizme
     visualizer.plot_all_data()
 
-    # Eğitim, doğrulama ve test setlerini çiz
+    # Eğitim, doğrulama ve test setlerini çizme
     visualizer.plot_splits()

@@ -119,7 +119,7 @@ class Trainer:
             tuple: (model, training_losses, validation_losses) - Eğitilmiş model, eğitim ve doğrulama kayıpları.
         """
 
-        # Eğitim başlangıç zamanını kaydet
+        # Eğitim başlangıç zamanını kaydetme
         start_time = time.time()
 
         # Veriyi yükleyip eğitim, doğrulama ve test setlerine ayırma
@@ -157,7 +157,7 @@ if __name__ == "__main__":
     data_path = "dataset/hw1Data.txt"
     for learning_rate in learning_rates:
         for epochs in epochs_list:
-            # Trainer sınıfını başlat ve modeli eğit
+            # Trainer sınıfını başlat ve modeli eğitme
             trainer = Trainer(learning_rate=learning_rate, epochs=epochs)
             model, training_losses, validation_losses = trainer.train(data_path)
             print("Eğitim tamamlandı. Eğitim logu, kayıp grafiği ve model 'results' dizininde kaydedildi.")
