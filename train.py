@@ -91,11 +91,11 @@ class Trainer:
             f"Final Validation Loss: {final_validation_loss:.4f}\n"
             f"{time_text}"
         )
-        plt.subplots_adjust(bottom=0.25)  # Alt kenar için boşluk ayarla
-        plt.gcf().text(0.01, 0.03, final_text, fontsize=10, color='black', ha='left', va='bottom')  # Daha aşağı taşır
+        plt.subplots_adjust(bottom=0.25) 
+        plt.gcf().text(0.01, 0.03, final_text, fontsize=10, color='black', ha='left', va='bottom') 
 
         plt.savefig(save_path)
-        # plt.show()
+        plt.show()
         plt.close()
 
     def save_model(self):
