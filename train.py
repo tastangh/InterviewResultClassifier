@@ -126,20 +126,20 @@ class Trainer:
         dataset = DataProcessor(file_path)
         X_train, y_train, X_val, y_val, X_test, y_test = dataset.split_data()
         
-        # Sonuç dizinlerini oluştur
+        # Sonuç dizinlerini oluşturma
         self.initialize_results_directory()
         
-        # Modeli eğit ve kayıpları kaydet
+        # Modeli eğit ve kayıpları kaydetme
         training_losses, validation_losses = self.model.fit(X_train, y_train, X_val, y_val)
         
-        # Eğitim süresini hesapla
+        # Eğitim süresini hesaplama
         elapsed_time = time.time() - start_time
         
-        # Eğitim loglarını ve grafikleri kaydet
+        # Eğitim loglarını ve grafikleri kaydetme
         self.save_training_log(len(training_losses), training_losses, validation_losses)
         self.plot_loss_graph(training_losses, validation_losses, elapsed_time)
         
-        # Eğitilmiş modeli kaydet
+        # Eğitilmiş modeli kaydetme
         self.save_model()
         
         return self.model, training_losses, validation_losses
